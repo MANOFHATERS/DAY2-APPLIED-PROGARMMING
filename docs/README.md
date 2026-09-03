@@ -46,6 +46,15 @@ python -m django test tests.test_team4_enhancements --settings=tests.test_settin
 ```
 This runs both the Enhancement 1 tests and the Enhancement 2 tests.
 
+To run the project's full existing test suite (to confirm we did not break
+anything):
+```bash
+python -m django test tests.test_ticket_actions tests.test_update_ticket_view \
+    tests.test_staff_ticket_view tests.test_staff_ticket_list_view \
+    tests.test_navigation tests.test_dashboard_sorting tests.test_status_css_classes \
+    --settings=tests.test_settings
+```
+
 ## Files we changed
 - `src/helpdesk/settings.py` - added `WAITING_STATUS = 6`, the new entry in
   `DEFAULT_TICKET_STATUS_CHOICES`, `DEFAULT_TICKET_OPEN_STATUSES`,
@@ -58,5 +67,12 @@ This runs both the Enhancement 1 tests and the Enhancement 2 tests.
   the transfer form.
 - `tests/test_team4_enhancements.py` - new tests for both enhancements.
 
+## Demo recording
+- `docs/demo/Team4_Demo.mp4` - 1920x1080 Full HD, 2 min 22 sec, 30 fps, H.264
+- `docs/Team4_Demo_Walkthrough.pdf` - explains what is shown at each timestamp
+
 ## Worksheet
 The full worksheet is in `docs/Team4_Feature_Enhancement_Worksheet.pdf`.
+It records our reasoning, hypotheses, test scenarios, implementation
+decisions and validation for both enhancements, in the format shown in the
+worked example discussed in class.
