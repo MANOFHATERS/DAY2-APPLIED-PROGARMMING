@@ -68,11 +68,15 @@ python -m django test tests.test_ticket_actions tests.test_update_ticket_view \
 - `tests/test_team4_enhancements.py` - new tests for both enhancements.
 
 ## Demo recording
-- `docs/demo/Team4_Demo.mp4` - 1920x1080 Full HD, 2 min 22 sec, 30 fps, H.264
-- `docs/Team4_Demo_Walkthrough.pdf` - explains what is shown at each timestamp
+- `docs/demo/Team4_Demo.mp4` - 1920x1080 Full HD, ~2 min, 30 fps, H.264
+- Shows BEFORE (original UI without our enhancements) for the first 6 frames,
+  then AFTER (with both enhancements working) for the next 8 frames.
+- Subtle Ken Burns zoom on each frame so it looks like a real screen recording,
+  not stacked screenshots.
 
-## Worksheet
-The full worksheet is in `docs/Team4_Feature_Enhancement_Worksheet.pdf`.
-It records our reasoning, hypotheses, test scenarios, implementation
-decisions and validation for both enhancements, in the format shown in the
-worked example discussed in class.
+## Worksheet and presentation notes
+- `docs/Team4_Feature_Enhancement_Worksheet.pdf` - 12-page full writeup in
+  the same format as the worked example distributed in class.
+- `docs/Team4_Presentation_Notes.docx` - simple 2-page presentation notes
+  in Word format. Bullet-pointed, simple English, covers everything in the
+  worksheet so we can present it without missing anything.
