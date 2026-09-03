@@ -1,0 +1,247 @@
+/*
+Bootstrap overrides
+*/
+@import "helpdesk-customize.css";
+
+/* Bootstrap 5 underlines links by default; restore Bootstrap 4 behaviour */
+a:not(.btn) {
+  text-decoration: none;
+}
+
+/* Bootstrap 5 removed the breadcrumb background; restore the BS4 grey */
+.breadcrumb {
+  background-color: #e9ecef;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+.thumbnail.filterBox {
+  float: left;
+  border: solid #ccc 1px;
+  padding: 10px;
+  margin: 4px;
+  max-width: 24%;
+  min-height: 200px;
+}
+
+.filterBox {
+  display: none;
+}
+.filterBoxShow {
+  display: block;
+}
+
+.filterBox label {
+  clear: both;
+  display: block;
+}
+
+.filterBox .filterHelp {
+  color: #aaa;
+  font-size: 0.8em;
+  clear: both;
+}
+
+#searchtabs {
+  margin-bottom: 20px;
+}
+
+.row_tablehead,
+table.table caption {
+  background-color: #dbd5d9;
+}
+table.table caption {
+  padding-left: 2em;
+  line-height: 2em;
+  font-weight: bold;
+}
+table.ticket-stats caption {
+  color: #fbff00;
+  font-style: italic;
+}
+table.ticket-stats tbody th,
+table.ticket-stats tbody tr {
+  padding-left: 20px;
+}
+
+.errorlist {
+  list-style: none;
+  padding: 0;
+  color: red;
+}
+
+.has-error .input-group input,
+.has-error .input-group select,
+.has-error .input-group textarea {
+  border-color: #b94a48;
+}
+
+#helpdesk-nav-collapse #searchform {
+  padding-top: 0;
+}
+#ticket-description {
+  background-color: #fcf8e3;
+}
+.followup.well {
+  background-color: #f4f5ff;
+}
+.followup {
+  padding: 20px;
+  margin: 30px;
+}
+
+#footer {
+  border-top: 2px solid #aaaaaa;
+  margin-top: 20px;
+  padding: 10px 0;
+}
+#helpdesk-body {
+  padding-top: 100px;
+}
+img.brand {
+  padding-right: 30px;
+}
+
+div.card-body img {
+  max-width: 900px;
+}
+
+pre {
+  background: #eee;
+  padding: 1em;
+  border: 1pt solid white;
+}
+
+/* Ticket titles wrap onto several lines rather than being cut off with an
+   ellipsis, so the whole title is readable without hovering over it. */
+table .tickettitle {
+  max-width: 30rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* On the ticket list the title column is the one worth reading, so give it a
+   floor to grow into instead of letting the narrower columns squeeze it. */
+#ticketTable .tickettitle {
+  min-width: 18rem;
+}
+
+/* Follow-ups are color coded by who can see them and which way they went, so
+   staff can tell an internal note from a reply to the submitter at a glance.
+   The color is backed up by the badge text in each follow-up header, so it is
+   never the only thing carrying the meaning. */
+.followup-item {
+  border-left: 4px solid transparent;
+}
+
+/* Private, staff-only notes keep the plain background. */
+.followup-item-internal {
+  border-left-color: #adb5bd;
+}
+
+.followup-item-internal .followup-item-badge {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+/* Sent out to the submitter. */
+.followup-item-outbound {
+  background-color: #eaf6ec;
+  border-left-color: #198754;
+}
+
+.followup-item-outbound .followup-item-badge {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+/* Received from the submitter. */
+.followup-item-inbound {
+  background-color: #fdf6e3;
+  border-left-color: #ffc107;
+}
+
+.followup-item-inbound .followup-item-badge {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+/* list-group-item-action repaints the background on hover, which would undo
+   the color coding, so darken each tint slightly instead. */
+.followup-item-outbound.list-group-item-action:hover,
+.followup-item-outbound.list-group-item-action:focus {
+  background-color: #d9eddf;
+}
+
+.followup-item-inbound.list-group-item-action:hover,
+.followup-item-inbound.list-group-item-action:focus {
+  background-color: #faedcd;
+}
+
+
+.handle {
+  cursor: grab;
+}
+
+/* hide google translate top bar */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+/* hide google translate tooltips (generated for every translated item) */
+.goog-tooltip {
+  display: none !important;
+}
+
+/* header */
+#dropdown li.headerlink {
+  width: auto;
+  float: left;
+  text-align: center;
+}
+
+/* query list */
+#dropdown li.headerlink ul {
+  display: none;
+  text-align: left;
+  position: absolute;
+  padding: 5px;
+  z-index: 2;
+}
+
+/* query entries */
+#dropdown li.headerlink:hover ul {
+  display: block;
+  width: auto;
+}
+
+#dropdown li.headerlink:hover ul li {
+  padding: 5px;
+  margin: 1px;
+  float: none;
+  display: block;
+}
