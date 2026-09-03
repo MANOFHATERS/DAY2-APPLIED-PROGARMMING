@@ -1532,6 +1532,102 @@ def unhold_ticket(request, ticket_id):
 unhold_ticket = staff_member_required(unhold_ticket)
 
 
+# Enhancement 2 (Team 4): a dedicated "Transfer" action that moves a ticket
+# to a different queue in a single, visible step. Before this change the only
+# way to move a ticket between queues was through the general Edit Ticket
+# form, where the Queue field sits alongside Title, Description, Priority,
+# Due date and several other unrelated fields. The customer need is for
+# Transfer to be its own clear action and to be visible in the ticket
+# history. See the worksheet for the full requirement and design tests.
+@helpdesk_staff_member_required
+@requires_csrf_token
+def transfer_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    ticket_perm_check(request, ticket)
+
+    # Only queues the current user is allowed to access can be selected as a
+    # destination. The ticket's current queue is excluded from the list so
+    # the action cannot be a no-op.
+    huser = HelpdeskUser(request.user)
+    available_queues = [
+        q for q in Queue.objects.all() if huser.can_access_queue(q)
+    ]
+    destination_choices = [
+        (q.id, q.title) for q in available_queues if q.id != ticket.queue.id
+    ]
+
+    error_message = None
+
+    if request.method == "POST":
+        try:
+            new_queue_id = int(request.POST.get("queue", ""))
+        except (TypeError, ValueError):
+            new_queue_id = None
+
+        new_queue = None
+        if new_queue_id is not None:
+            for q in available_queues:
+                if q.id == new_queue_id and q.id != ticket.queue.id:
+                    new_queue = q
+                    break
+
+        if new_queue is None:
+            error_message = _("Please choose a valid destination queue.")
+        else:
+            old_queue = ticket.queue
+            old_queue_title = old_queue.title
+
+            ticket.queue = new_queue
+
+            # If the destination queue has a default owner and the ticket is
+            # currently unassigned, give the ticket to that default owner so
+            # the right team picks it up. If the ticket is already assigned
+            # we leave the owner alone - the customer need says the transfer
+            # should "work sensibly" with both the destination default owner
+            # and the existing owner.
+            if new_queue.default_owner and not ticket.assigned_to:
+                ticket.assigned_to = new_queue.default_owner
+
+            ticket.save()
+
+            followup = FollowUp.objects.create(
+                ticket=ticket,
+                title=_("Ticket transferred from {src} to {dst}").format(
+                    src=old_queue_title, dst=new_queue.title
+                ),
+                date=now(),
+                public=True,
+                user=request.user,
+                comment=request.POST.get("comment", "") or "",
+            )
+
+            TicketChange.objects.create(
+                followup=followup,
+                field=_("Queue"),
+                old_value=old_queue_title,
+                new_value=new_queue.title,
+            )
+            if new_queue.default_owner and ticket.assigned_to == new_queue.default_owner:
+                TicketChange.objects.create(
+                    followup=followup,
+                    field=_("Owner"),
+                    old_value=_("Unassigned"),
+                    new_value=ticket.assigned_to.get_username(),
+                )
+
+            return HttpResponseRedirect(ticket.get_absolute_url())
+
+    return render(
+        request,
+        "helpdesk/ticket_transfer.html",
+        {
+            "ticket": ticket,
+            "destination_choices": destination_choices,
+            "error_message": error_message,
+        },
+    )
+
+
 @helpdesk_staff_member_required
 def rss_list(request):
     return render(request, "helpdesk/rss_list.html", {"queues": Queue.objects.all()})

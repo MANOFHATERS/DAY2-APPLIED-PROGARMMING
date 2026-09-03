@@ -77,6 +77,12 @@ if helpdesk_settings.HELPDESK_UI_ENABLED:
         path(
             "tickets/<int:ticket_id>/update/", staff.update_ticket_view, name="update"
         ),
+        # Enhancement 2 (Team 4): a dedicated Transfer action, so moving a
+        # ticket between queues is no longer buried inside the general Edit
+        # form. See the worksheet for the full requirement.
+        path(
+            "tickets/<int:ticket_id>/transfer/", staff.transfer_ticket, name="transfer"
+        ),
         path("tickets/<int:ticket_id>/delete/", staff.delete_ticket, name="delete"),
         path("tickets/<int:ticket_id>/hold/", staff.hold_ticket, name="hold"),
         path("tickets/<int:ticket_id>/unhold/", staff.unhold_ticket, name="unhold"),

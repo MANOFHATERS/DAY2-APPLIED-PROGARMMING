@@ -1,0 +1,68 @@
+{% extends "helpdesk/base.html" %}
+{% load i18n static %}
+
+{% block helpdesk_title %}
+  {{ ticket.queue.slug }}-{{ ticket.id }}: {% translate "Transfer Ticket" %}
+{% endblock helpdesk_title %}
+
+{% block h1_title %}
+  {% translate "Transfer ticket" %} {{ ticket.ticket_for_url }}
+{% endblock h1_title %}
+
+{% block helpdesk_breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'helpdesk:list' %}">{% translate "Tickets" %}</a></li>
+  <li class="breadcrumb-item"><a href="{{ ticket.get_absolute_url }}">{{ ticket.queue.slug }}-{{ ticket.id }}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{% translate "Transfer" %}</li>
+{% endblock helpdesk_breadcrumb %}
+
+{% block helpdesk_body %}
+  <div class="card border-0">
+    <div class="card-body">
+      <p class="text-secondary">
+        {% blocktranslate with queue=ticket.queue.title %}
+          This ticket is currently in the <strong>{{ queue }}</strong> queue.
+          Choose the destination queue to move the ticket. The transfer will be
+          recorded in the ticket's history.
+        {% endblocktranslate %}
+      </p>
+
+      {% if error_message %}
+        <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="destination_queue" class="form-label">
+            {% translate "Destination queue" %}
+          </label>
+          <select id="destination_queue" name="queue" class="form-select" required>
+            <option value="" selected>--------</option>
+            {% for qid, qtitle in destination_choices %}
+              <option value="{{ qid }}">{{ qtitle }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="transfer_comment" class="form-label">
+            {% translate "Reason for transfer (optional, visible in history)" %}
+          </label>
+          <textarea id="transfer_comment" name="comment" class="form-control"
+                    rows="3"
+                    placeholder="{% translate 'e.g. Handing over to the IT team as this needs server-side access.' %}"></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-right-left me-1"></i>
+            {% translate "Transfer ticket" %}
+          </button>
+          <a href="{{ ticket.get_absolute_url }}" class="btn btn-outline-secondary">
+            {% translate "Cancel" %}
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock helpdesk_body %}
