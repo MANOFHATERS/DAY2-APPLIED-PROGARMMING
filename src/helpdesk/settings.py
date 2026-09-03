@@ -150,6 +150,10 @@ REOPENED_STATUS = getattr(settings, "HELPDESK_TICKET_REOPENED_STATUS", 2)
 RESOLVED_STATUS = getattr(settings, "HELPDESK_TICKET_RESOLVED_STATUS", 3)
 CLOSED_STATUS = getattr(settings, "HELPDESK_TICKET_CLOSED_STATUS", 4)
 DUPLICATE_STATUS = getattr(settings, "HELPDESK_TICKET_DUPLICATE_STATUS", 5)
+# Enhancement 1 (Team 4): a new "Waiting for Customer" status so agents can
+# distinguish tickets that are blocked on customer input from work the team
+# can actively continue. See the worksheet for the full requirement.
+WAITING_STATUS = getattr(settings, "HELPDESK_TICKET_WAITING_STATUS", 6)
 
 DEFAULT_TICKET_STATUS_CHOICES = (
     (OPEN_STATUS, _("Open")),
@@ -157,13 +161,17 @@ DEFAULT_TICKET_STATUS_CHOICES = (
     (RESOLVED_STATUS, _("Resolved")),
     (CLOSED_STATUS, _("Closed")),
     (DUPLICATE_STATUS, _("Duplicate")),
+    (WAITING_STATUS, _("Waiting for Customer")),
 )
 TICKET_STATUS_CHOICES = getattr(
     settings, "HELPDESK_TICKET_STATUS_CHOICES", DEFAULT_TICKET_STATUS_CHOICES
 )
 
 # List of status choices considered as "open"
-DEFAULT_TICKET_OPEN_STATUSES = (OPEN_STATUS, REOPENED_STATUS)
+# A ticket that is "Waiting for Customer" is still active work from the
+# support team's point of view (it is not Resolved or Closed), so it is
+# included in the open statuses.
+DEFAULT_TICKET_OPEN_STATUSES = (OPEN_STATUS, REOPENED_STATUS, WAITING_STATUS)
 TICKET_OPEN_STATUSES = getattr(
     settings, "HELPDESK_TICKET_OPEN_STATUSES", DEFAULT_TICKET_OPEN_STATUSES
 )
@@ -175,12 +183,14 @@ DEFAULT_TICKET_STATUS_CHOICES_FLOW = {
         RESOLVED_STATUS,
         CLOSED_STATUS,
         DUPLICATE_STATUS,
+        WAITING_STATUS,
     ),
     REOPENED_STATUS: (
         REOPENED_STATUS,
         RESOLVED_STATUS,
         CLOSED_STATUS,
         DUPLICATE_STATUS,
+        WAITING_STATUS,
     ),
     RESOLVED_STATUS: (
         REOPENED_STATUS,
@@ -195,6 +205,16 @@ DEFAULT_TICKET_STATUS_CHOICES_FLOW = {
         REOPENED_STATUS,
         DUPLICATE_STATUS,
     ),
+    # A ticket that is waiting for the customer can later be resumed (back to
+    # Open), or moved directly to Resolved / Closed / Duplicate if the
+    # customer reply makes one of those the right outcome.
+    WAITING_STATUS: (
+        OPEN_STATUS,
+        RESOLVED_STATUS,
+        CLOSED_STATUS,
+        DUPLICATE_STATUS,
+        WAITING_STATUS,
+    ),
 }
 TICKET_STATUS_CHOICES_FLOW = getattr(
     settings, "HELPDESK_TICKET_STATUS_CHOICES_FLOW", DEFAULT_TICKET_STATUS_CHOICES_FLOW
@@ -207,6 +227,7 @@ DEFAULT_TICKET_STATUS_CSS_CLASSES = {
     RESOLVED_STATUS: "success",
     CLOSED_STATUS: "success",
     DUPLICATE_STATUS: "secondary",
+    WAITING_STATUS: "info",
 }
 TICKET_STATUS_CSS_CLASSES = getattr(
     settings, "HELPDESK_TICKET_STATUS_CSS_CLASSES", DEFAULT_TICKET_STATUS_CSS_CLASSES
